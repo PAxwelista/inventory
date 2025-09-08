@@ -5,15 +5,15 @@ import { CreateItemDto } from './dto/create-item.dto';
 
 @Controller('item')
 export class ItemsController {
-  constructor(private readonly ItemsService: ItemsService) {}
+  constructor(private readonly itemsService: ItemsService) {}
 
   @Get()
   findAll(): Promise<Item[]> {
-    return this.ItemsService.getAll();
+    return this.itemsService.getAll();
   }
 
   @Post()
-  create(@Body() itemData:CreateItemDto): Promise<Item> {
-    return this.ItemsService.createItem(itemData);
+  create(@Body() itemData: CreateItemDto): Promise<Item> {
+    return this.itemsService.createItem(itemData);
   }
 }

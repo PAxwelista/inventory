@@ -1,5 +1,11 @@
-import { App } from 'src/apps/app.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { App } from '../apps/app.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -7,19 +13,17 @@ export class User {
   id: number;
 
   @Column()
-  name:string;
+  name: string;
 
   @Column()
-  email:string;
+  email: string;
 
   @Column()
-  password:string;
-  
-  @OneToMany(()=> App , (app)=>app.user)
-  app:App[]
+  password: string;
+
+  @OneToMany(() => App, (app) => app.user)
+  app: App[];
 
   @CreateDateColumn()
   created_at: Date;
-
-
 }

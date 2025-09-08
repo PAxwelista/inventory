@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { App } from 'src/apps/app.entity';
+import { App } from '../apps/app.entity';
 
 @Entity('items')
 export class Item {
@@ -24,8 +24,8 @@ export class Item {
   @Column('int')
   quantity: number;
 
-  @Column('json', { default: {} })
-  options: any;
+  @Column('json')
+  options: Record<string,any>;
 
   @CreateDateColumn()
   created_at: Date;

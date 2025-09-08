@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Item } from './item.entity';
+import { Item } from './item.entity'
 
 @Injectable()
 export class ItemsService {
@@ -11,10 +11,10 @@ export class ItemsService {
   ) {}
 
   getAll(): Promise<Item[]> {
-    return this.itemsRepository.find();
+    return this.itemsRepository.find()
   }
-  createItem(item:Partial<Item>): Promise<Item> {
-    const newItem = this.itemsRepository.create(item)
-    return this.itemsRepository.save(newItem)
+  createItem(item: Partial<Item>): Promise<Item> {
+    const newItem = this.itemsRepository.create(item);
+    return this.itemsRepository.save(newItem);
   }
 }
