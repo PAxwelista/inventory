@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -24,6 +25,7 @@ export class App {
   items: Item[];
 
   @ManyToOne(() => User)
+  @JoinColumn({name:'user_id'})
   user: User;
 
   @CreateDateColumn()

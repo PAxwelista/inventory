@@ -5,6 +5,7 @@ import { ItemModule } from './items/items.module';
 import { User } from './users/user.entity';
 import { App } from './apps/app.entity';
 import { UserModule } from './users/users.module';
+import { AppModule } from './apps/apps.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UserModule } from './users/users.module';
       synchronize: true, //to remove in prod
     }),
     ItemModule,
-    UserModule
+    UserModule,
+    AppModule
   ],
 })
 export class BddModule {}

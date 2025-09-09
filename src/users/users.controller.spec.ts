@@ -4,7 +4,6 @@ import { UsersService } from './users.service';
 
 describe('usersController', () => {
   let controller: UsersController;
-  let service: UsersService;
 
   const mockUser = {
     id: 1,
@@ -24,7 +23,6 @@ describe('usersController', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-    service = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {

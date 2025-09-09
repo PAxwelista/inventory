@@ -11,16 +11,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private itemsRepository: Repository<User>,
+    private usersRepository: Repository<User>,
   ) {}
 
   async createUser(user: CreateUserDto): Promise<User> {
     const hashPassword = await bcrypt.hash(user.password, 10);
 
-    const newUser = this.itemsRepository.create({
+    const newUser = this.usersRepository.create({
       ...user,
       password: hashPassword,
     });
-    return this.itemsRepository.save(newUser);
+    return this.usersRepository.save(newUser);
+  }
+
+  async findOneById(id: number): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { id } });
   }
 }

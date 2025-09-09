@@ -18,6 +18,7 @@ describe('UsersService', () => {
   const mockRepository = {
     save: jest.fn().mockResolvedValue(mockUser),
     create: jest.fn().mockResolvedValue(mockUser),
+    findOne: jest.fn().mockResolvedValueOnce(mockUser).mockResolvedValueOnce(null),
   };
 
   beforeEach(async () => {
@@ -50,13 +51,28 @@ describe('UsersService', () => {
       }),
     );
 
-    expect(repository.create).toHaveBeenCalledWith(expect.objectContaining({
-      name: 'Tom',
-      email: 'axel@gmail.com',
-    }))
-    expect(repository.create).not.toHaveBeenCalledWith(expect.objectContaining({
-      password: 'ea',
-    }))
+    expect(repository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Tom',
+        email: 'axel@gmail.com',
+      }),
+    );
+    expect(repository.create).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        password: 'ea',
+      }),
+    );
     expect(repository.save).toHaveBeenCalled();
   });
+  it('should find a user with her ID',async () => {
+
+    const user = await service.findOneById(1)
+
+    expect(user).toEqual(mockUser)
+  });
+  it('should return null if user not find' , async  ()=>{
+    const user = await service.findOneById(2)
+
+    expect(user).toBe(null)
+  })
 });

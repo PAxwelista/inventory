@@ -22,7 +22,7 @@ export class User {
   password: string;
 
   @OneToMany(() => App, (app) => app.user)
-  app: App[];
+  apps: App[];
 
   @CreateDateColumn()
   created_at: Date;
