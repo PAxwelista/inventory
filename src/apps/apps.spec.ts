@@ -14,7 +14,7 @@ describe('Apps', () => {
 
   beforeAll(async () => {
     module = await createTestingModule(
-      [AppsService, AppsController ],
+      [AppsService], [AppsController ],
       [UserModule],
     );
     controller = module.get<AppsController>(AppsController);

@@ -16,7 +16,8 @@ describe('itemsController', () => {
 
   const mockItemsService = {
     createItem: jest.fn().mockResolvedValue(mockItem),
-    getAllAppUserItems : jest.fn().mockResolvedValue([mockItem])
+    getAllAppUserItems: jest.fn().mockResolvedValue([mockItem]),
+    softDelete: jest.fn().mockResolvedValue(mockItem),
   };
   const mockAppsService = {
     findByApiKey: jest.fn().mockResolvedValue({}),
@@ -39,26 +40,43 @@ describe('itemsController', () => {
   it('should be defined', async () => {
     expect(controller).toBeDefined();
   });
-  
-  describe ('createItem' , ()=>{
+
+  describe('createItem', () => {
     it('should should create a new item', async () => {
-      
       const dto = { name: 'Pizza', quantity: 3, app_user_id: 'Axel' };
       const item = await controller.createItem(mockReq as any, dto);
-  
+
       expect(item).toEqual(mockItem);
-      expect(mockItemsService.createItem).toHaveBeenCalledWith(dto,mockReq.app)
+      expect(mockItemsService.createItem).toHaveBeenCalledWith(
+        dto,
+        mockReq.app,
+      );
     });
-  })
+  });
 
-  describe('getAllAppUserItems' , ()=>{
-    it('should find all app user items' , async()=>{
-      const dto = {id: "test"}
-      const items = await controller.getAllAppUserItems(mockReq as any,dto)
+  describe('getAllAppUserItems', () => {
+    it('should find all app user items', async () => {
+      const dto = 'test' ;
+      const items = await controller.getAllAppUserItems(mockReq as any, dto);
 
-      expect(items).toEqual([mockItem])
-      expect(mockItemsService.getAllAppUserItems).toHaveBeenCalledWith(mockReq.app.id,dto.id)
-    })
-  })
- 
+      expect(items).toEqual([mockItem]);
+      expect(mockItemsService.getAllAppUserItems).toHaveBeenCalledWith(
+        mockReq.app.id,
+        dto,
+      );
+    });
+  });
+
+  describe('softDelete', () => {
+    it('should update delete_at', async () => {
+      const itemId = 2;
+      const item = await controller.softDelete(mockReq as any, itemId);
+
+      expect(item).toEqual(mockItem);
+      expect(mockItemsService.softDelete).toHaveBeenCalledWith(
+        itemId,
+        mockReq.app.id,
+      );
+    });
+  });
 });

@@ -21,7 +21,8 @@ describe('itemsService', () => {
   const mockRepository = {
     create: jest.fn().mockResolvedValue(mockItem),
     save: jest.fn().mockResolvedValue(mockItem),
-    find:jest.fn().mockResolvedValue([mockItem])
+    find:jest.fn().mockResolvedValue([mockItem]),
+    findOne:jest.fn().mockResolvedValue(mockItem)
   };
 
   beforeEach(async () => {
@@ -69,6 +70,16 @@ describe('itemsService', () => {
 
       expect(items).toEqual([mockItem])
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
+    })
+  })
+  
+  describe('softDelete' , ()=>{
+    it('should update delete_at' , async()=>{
+
+      const item = await itemsService.softDelete(1,1)
+
+      expect(item).toEqual(mockItem)
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(1)
     })
   })
 

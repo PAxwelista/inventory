@@ -6,12 +6,13 @@ import {
   Req,
   UnauthorizedException,
   Get,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from './item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { ApiKeyGuard } from '../guard/apiKeyGuard';
-import { GetAllAppUserItemsDto } from './dto/get-all-app-user-items.dto';
 
 @Controller('items')
 export class ItemsController {
@@ -27,11 +28,28 @@ export class ItemsController {
   }
 
   @UseGuards(ApiKeyGuard)
-  @Get()
-  getAllAppUserItems(@Req() req: Request, @Body() appUser:GetAllAppUserItemsDto): Promise<Item[]> {
+  @Get('findWithAppUserId/:id')
+  getAllAppUserItems(@Req() req: Request, @Param('id') appUserId:string): Promise<Item[]> {
     const app = req['app'];
     if (!app) throw new UnauthorizedException('UseGuard Error');
 
-    return this.itemsService.getAllAppUserItems(app.id,appUser.id);
+    return this.itemsService.getAllAppUserItems(app.id,appUserId);
   }
+
+  @UseGuards(ApiKeyGuard)
+  @Patch('/softDelete/:id')
+  softDelete(@Req() req: Request,@Param('id') id:number){
+    const app = req['app'];
+    if (!app) throw new UnauthorizedException('UseGuard Error');
+    
+    return this.itemsService.softDelete(id,app.id)
+  }
+  
+  @Get('test')
+  test(){
+    console.log("here")
+    return 'bame'
+  }
+
+
 }

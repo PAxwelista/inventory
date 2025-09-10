@@ -10,11 +10,11 @@ import { AppsService } from '../apps/apps.service';
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
   constructor(private readonly appsService: AppsService) {}
-
+  
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const apiKey = request.headers['x-api-key'];
-
+    
     if (!apiKey) throw new UnauthorizedException('API key missing');
 
     const app = await this.appsService.findByApiKey(apiKey);
