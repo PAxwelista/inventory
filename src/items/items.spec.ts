@@ -1,27 +1,35 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { ItemsController } from './items.controller';
-// import { ItemsService } from './items.service';
+import { TestingModule } from '@nestjs/testing';
+import { ItemsController } from './items.controller';
+import { ItemsService } from './items.service';
+import { createTestingModule } from '../../test/utils/test-utils';
+import { AppModule } from '../apps/apps.module';
 
-// describe('InventoryController', () => {
-//   let itemController: ItemsController;
+describe('Item', () => {
+  let controller: ItemsController;
+  let service: ItemsService;
+  let module: TestingModule;
 
-//   beforeEach(async () => {
-//     const app: TestingModule = await Test.createTestingModule({
-//       controllers: [ItemsController],
-//       providers: [ItemsService],
-//     }).compile();
+  beforeAll(async () => {
+    module = await createTestingModule(
+      [ItemsService, ItemsController],
+      [AppModule],
+    );
+    controller = module.get<ItemsController>(ItemsController);
+    service = module.get<ItemsService>(ItemsService);
+  });
 
-//     itemController = app.get<ItemsController>(ItemsController);
-//   });
 
-//   describe('findAll', () => {
-//     it('should return something', () => {
-//       expect(true).toBeTruthy()
-//     });
-//   });
-  describe('create', () => {
-    it('should return something', () => {
-      expect(true).toBeTruthy()
+  describe('createItem',  () => {
+    it('should create a new item',async () => {
+      const item = await controller.createItem(
+        {
+          app: {
+            name: 'newApp',
+          },
+        } as any,
+        { name: 'Pasta', quantity: 2, app_user_id: 'Axel' },
+      );
+      expect(item).toBe(4);
     });
   });
-// });
+});

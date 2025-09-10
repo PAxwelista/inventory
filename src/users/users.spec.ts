@@ -15,10 +15,6 @@ describe('Users', () => {
     
   });
 
-  afterAll(async () => {
-    await module.close();
-  });
-
   describe('createUser', () => {
     it('should add a new user into the database', async () => {
       const newItem = await controller.createUser({

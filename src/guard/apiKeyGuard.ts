@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AppsService } from '../apps/apps.service';
-import { Request } from 'express';
+
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
@@ -24,8 +24,5 @@ export class ApiKeyGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
-  }
+  
 }

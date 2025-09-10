@@ -1,32 +1,14 @@
-import { validate } from 'class-validator';
+
 import { CreateAppDto } from './create-app.dto';
+import { dtoTest } from '../../../test/utils/dto-test';
 
 describe('CreateAppDto', () => {
-  it('should success with all correct info', async () => {
-    const dto = new CreateAppDto();
-    dto.name = 'App1';
-    dto.user_id = 2;
+  const validDto = {
+    name: 'App1',
+    user_id: 2,
+  };
+  const requiredProps = ['name', 'user_id'];
 
-    const errors = await validate(dto);
-
-    expect(errors.length).toBe(0);
-  });
-  it('should failed with no name', async () => {
-    const dto = new CreateAppDto();
-    dto.user_id = 2;
-
-    const errors = await validate(dto);
-
-    expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].property).toBe('name');
-  });
-  it('should failed with no user_id', async () => {
-    const dto = new CreateAppDto();
-    dto.name = 'App1';
-
-    const errors = await validate(dto);
-
-    expect(errors.length).toBeGreaterThan(0);
-    expect(errors[0].property).toBe('user_id');
-  });
+  dtoTest<CreateAppDto>(CreateAppDto,validDto,requiredProps)
+ 
 });

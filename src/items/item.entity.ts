@@ -2,10 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../users/user.entity';
 import { App } from '../apps/app.entity';
 
 @Entity('items')
@@ -13,10 +13,14 @@ export class Item {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, {
-    cascade: true,
+  @ManyToOne(() => App, {
+    cascade: false,
   })
+  @JoinColumn({ name: 'app_id' })
   app: App;
+
+  @Column()
+  app_user_id: string;
 
   @Column()
   name: string;
@@ -24,8 +28,11 @@ export class Item {
   @Column('int')
   quantity: number;
 
-  @Column('json')
-  options: Record<string,any>;
+  @Column({
+    type: process.env.NODE_ENV === 'test' ? 'simple-json' : 'jsonb',
+    nullable: true,
+  })
+  options: Record<string, any> | null;
 
   @CreateDateColumn()
   created_at: Date;

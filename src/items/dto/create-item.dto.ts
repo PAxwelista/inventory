@@ -14,6 +14,10 @@ export class CreateItemDto {
   @IsInt()
   quantity: number;
 
+  @IsString()
+  @IsNotEmpty()
+  app_user_id:string
+
   @IsOptional()
   options?: any;
 }

@@ -1,19 +1,36 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  UnauthorizedException,
+  Get,
+} from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from './item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
+import { ApiKeyGuard } from '../guard/apiKeyGuard';
 
-@Controller('item')
+@Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
-  @Get()
-  findAll(): Promise<Item[]> {
-    return this.itemsService.getAll();
+  @UseGuards(ApiKeyGuard)
+  @Post()
+  createItem(@Req() req: Request, @Body() item: CreateItemDto): Promise<Item> {
+    const app = req['app'];
+    if (!app) throw new UnauthorizedException('UseGuard Error');
+
+    return this.itemsService.createItem(item, app);
   }
 
-  @Post()
-  create(@Body() itemData: CreateItemDto): Promise<Item> {
-    return this.itemsService.createItem(itemData);
+  @UseGuards(ApiKeyGuard)
+  @Get()
+  getAllAppUserItems(@Req() req: Request, @Body() appUser): Promise<Item[]> {
+    const app = req['app'];
+    if (!app) throw new UnauthorizedException('UseGuard Error');
+
+    return this.itemsService.getAllAppUserItems(app.id,appUser.id);
   }
 }
