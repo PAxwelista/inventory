@@ -21,6 +21,7 @@ describe('itemsService', () => {
   const mockRepository = {
     create: jest.fn().mockResolvedValue(mockItem),
     save: jest.fn().mockResolvedValue(mockItem),
+    find:jest.fn().mockResolvedValue([mockItem])
   };
 
   beforeEach(async () => {
@@ -33,24 +34,43 @@ describe('itemsService', () => {
     }).compile();
     itemsService = module.get<ItemsService>(ItemsService);
   });
+  it ('should bne defined' , ()=>{
+    expect(itemsService).toBeDefined()
+  })
 
-  it('should', async () => {
-    const dtoApp = {
-      id: 2,
-      name: 'Cool app',
-      api_key: 'one',
-      items: [],
-      user: new User(),
-      created_at: new Date(),
-    };
-    const dtoItem = { name: 'Plant', quantity: 3, app_user_id: 'Tomas' };
-    const item = await itemsService.createItem(dtoItem, dtoApp);
-
-    expect(item).toBe(mockItem);
-    expect(mockRepository.create).toHaveBeenCalledWith({
-      ...dtoItem,
-      app: dtoApp,
+  describe('createItem' , ()=>{
+    it('should create a new item', async () => {
+      const dtoApp = {
+        id: 2,
+        name: 'Cool app',
+        api_key: 'one',
+        items: [],
+        user: new User(),
+        created_at: new Date(),
+      };
+      const dtoItem = { name: 'Plant', quantity: 3, app_user_id: 'Tomas' };
+      const item = await itemsService.createItem(dtoItem, dtoApp);
+  
+      expect(item).toBe(mockItem);
+      expect(mockRepository.create).toHaveBeenCalledWith({
+        ...dtoItem,
+        app: dtoApp,
+      });
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
-    expect(mockRepository.save).toHaveBeenCalledTimes(1);
-  });
+  })
+
+  describe('getAllAppUserItems' , ()=>{
+    it('should get all app user items' , async ()=>{
+      const appId = 4
+      const appUserId = "axel"
+
+      const items = await itemsService.getAllAppUserItems(appId,appUserId)
+
+      expect(items).toEqual([mockItem])
+      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+    })
+  })
+
+  
 });
