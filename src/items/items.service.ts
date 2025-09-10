@@ -20,16 +20,33 @@ export class ItemsService {
 
   getAllAppUserItems(appId: number, appUserId: string): Promise<Item[]> {
     return this.itemsRepository.find({
-      where: { app: { id: appId }, app_user_id: appUserId, delete_at: IsNull() },
+      where: {
+        app: { id: appId },
+        app_user_id: appUserId,
+        delete_at: IsNull(),
+      },
     });
   }
 
   async softDelete(itemId: number, appId: number): Promise<Item> {
     const item = await this.itemsRepository.findOne({
-      where: { id: itemId, app: { id: appId },delete_at: IsNull()  },
+      where: { id: itemId, app: { id: appId }, delete_at: IsNull() },
     });
     if (!item) throw new NotFoundException('Item not found or already delete');
     item.delete_at = new Date();
+    return await this.itemsRepository.save(item);
+  }
+
+  async updateQty(
+    itemId: number,
+    appId: number,
+    newQty: number,
+  ): Promise<Item> {
+    const item = await this.itemsRepository.findOne({
+      where: { id: itemId, app: { id: appId }, delete_at: IsNull() },
+    });
+    if (!item) throw new NotFoundException('Item not found or already delete');
+    item.quantity = newQty;
     return await this.itemsRepository.save(item);
   }
 }

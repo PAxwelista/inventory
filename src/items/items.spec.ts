@@ -114,5 +114,33 @@ describe('Item', () => {
 
       expect(dbItemDeleted?.delete_at).not.toBe(null);
     });
-  });
+  });``
+describe('updateQty' , ()=>{
+  it('should update quantity' , async ()=>{
+    const newItem = await controller.createItem({ app: newApp } as any, item);
+
+    const dbItem = await repository.findOne({ where: { id: newItem.id } });
+
+    const newQty = 5
+
+    expect(dbItem?.quantity).toBe(item.quantity)
+
+    await request(application.getHttpServer())
+    .patch(`/items/updateQty/${newItem.id}`)
+    .set('x-api-key', newApp.api_key)
+    .send({quantity : newQty})
+    .expect(200);
+
+
+    const dbItemQtyChange = await repository.findOne({ where: { id: newItem.id } });
+
+    expect(dbItemQtyChange?.quantity).toBe(newQty)
+
+
+  })
+
+  
+
+
+})
 });

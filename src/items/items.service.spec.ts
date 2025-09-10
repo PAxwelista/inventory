@@ -80,6 +80,16 @@ describe('itemsService', () => {
 
       expect(item).toEqual(mockItem)
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(2)
+    })
+  })
+  describe('updateQty' , ()=>{
+    it ('should update quantity' , async()=>{
+      const item = await itemsService.updateQty(1,1,4)
+
+      expect(item).toEqual(mockItem)
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(2)
+      expect(mockRepository.save).toHaveBeenCalledTimes(3)
     })
   })
 

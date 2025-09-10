@@ -18,6 +18,7 @@ describe('itemsController', () => {
     createItem: jest.fn().mockResolvedValue(mockItem),
     getAllAppUserItems: jest.fn().mockResolvedValue([mockItem]),
     softDelete: jest.fn().mockResolvedValue(mockItem),
+    updateQty: jest.fn().mockResolvedValue(mockItem),
   };
   const mockAppsService = {
     findByApiKey: jest.fn().mockResolvedValue({}),
@@ -79,4 +80,20 @@ describe('itemsController', () => {
       );
     });
   });
+
+  describe('updateQty' , ()=>{
+    it('should update the quantity' , async()=>{
+      
+      const itemId = 2;
+      const newItemQty = 29;
+      const item = await controller.updateQty(mockReq as any, itemId,newItemQty)
+
+      expect(item).toEqual(mockItem)
+      expect(mockItemsService.updateQty).toHaveBeenCalledWith(
+        itemId,
+        mockReq.app.id,
+        newItemQty
+      );
+    })
+  })
 });

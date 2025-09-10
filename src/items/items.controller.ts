@@ -44,11 +44,14 @@ export class ItemsController {
     
     return this.itemsService.softDelete(id,app.id)
   }
-  
-  @Get('test')
-  test(){
-    console.log("here")
-    return 'bame'
+
+  @UseGuards(ApiKeyGuard)
+  @Patch('/updateQty/:id')
+  updateQty(@Req() req: Request,@Param('id') id:number , @Body('quantity') quantity:number){
+    const app = req['app'];
+    if (!app) throw new UnauthorizedException('UseGuard Error');
+    
+    return this.itemsService.updateQty(id,app.id,quantity)
   }
 
 
