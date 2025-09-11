@@ -16,6 +16,7 @@ import { AppModule } from './apps/apps.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
       entities: [Item,User,App],
       synchronize: true, //to remove in prod
     }),
