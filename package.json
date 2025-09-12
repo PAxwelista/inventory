@@ -11,6 +11,7 @@
     "start": "nest start --env-file .env.development.local",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
+    "start:testprod": "nest start --env-file .env.production.local",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
