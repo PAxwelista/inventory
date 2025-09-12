@@ -7,6 +7,7 @@ import { App } from './apps/app.entity';
 import { UserModule } from './users/users.module';
 import { AppModule } from './apps/apps.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
 
 @Module({
   imports: [
@@ -28,17 +29,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        ssl:
-          process.env.NODE_ENV === 'production'
-            ? { rejectUnauthorized: false }
-            : false,
+        ssl: { ca: fs.readFileSync('supabase-root.crt').toString() },
         entities: [Item, User, App],
-        synchronize : false
+        synchronize: false,
       }),
     }),
     ItemModule,
     UserModule,
-    AppModule
+    AppModule,
   ],
 })
 export class InitialModule {}
