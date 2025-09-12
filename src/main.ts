@@ -3,8 +3,9 @@ import { BddModule } from './Bdd.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  console.log(process.env.DB_USERNAME);
   const app = await NestFactory.create(BddModule);
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap(); 
+bootstrap();
