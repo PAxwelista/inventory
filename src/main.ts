@@ -8,7 +8,6 @@ async function bootstrap() {
   
 
   // Test de connexion à la DB
-  console.log(process.env.DB_HOST)
   const client = new Client({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -16,7 +15,7 @@ async function bootstrap() {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     ssl: { rejectUnauthorized: false },
-    family: 4, // force IPv4
+    synchronize : false
   });
 
   try {

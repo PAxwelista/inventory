@@ -33,7 +33,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             ? { rejectUnauthorized: false }
             : false,
         entities: [Item, User, App],
-        extra: { family: 4 },
+        synchronize : false
       }),
     }),
     ItemModule,
