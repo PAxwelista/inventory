@@ -30,13 +30,12 @@ import * as fs from 'fs';
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
         ssl:process.env.NODE_ENV === 'production'? {
-          ca: fs.readFileSync('certs/ca.pem').toString(),
+          ca: fs.readFileSync('etc/secrets/ca.pem').toString(),
           rejectUnauthorized: true
         } : false,
         rejectUnauthorized :  process.env.NODE_ENV === 'production',
         entities: [Item, User, App],
         synchronize: true,
-        family:4
       }),
     }),
     ItemModule,
