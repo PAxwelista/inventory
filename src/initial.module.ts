@@ -29,9 +29,14 @@ import * as fs from 'fs';
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
-        ssl: { ca: fs.readFileSync('supabase-root.crt').toString() },
+        ssl:process.env.NODE_ENV === 'production'? {
+          ca: fs.readFileSync('supabase-root.crt').toString(),
+          rejectUnauthorized: true
+        } : false,
+        rejectUnauthorized :  process.env.NODE_ENV === 'production',
         entities: [Item, User, App],
         synchronize: false,
+        family:4
       }),
     }),
     ItemModule,

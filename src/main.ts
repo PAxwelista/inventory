@@ -2,20 +2,26 @@ import { NestFactory } from '@nestjs/core';
 import { InitialModule } from './initial.module';
 import { ValidationPipe } from '@nestjs/common';
 
+import * as fs from 'fs';
 import { Client } from 'pg';
 
 async function bootstrap() {
-  
 
-  // Test de connexion à la DB
+  // Test de connexion à la D
   const client = new Client({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false },
-    synchronize : false
+    ssl:
+      process.env.NODE_ENV === 'production'
+        ? {
+            ca: fs.readFileSync('supabase-root.crt').toString(),
+            rejectUnauthorized: true,
+          }
+        : false,
+    synchronize: false,
   });
 
   try {
