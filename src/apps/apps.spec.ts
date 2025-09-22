@@ -9,6 +9,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from './app.entity';
+import { UsersService } from '../users/users.service';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('Apps', () => {
   let service: AppsService;
@@ -16,16 +18,25 @@ describe('Apps', () => {
   let module: TestingModule;
   let repository: Repository<App>;
   let application: INestApplication;
+  let usersService: UsersService;
 
   beforeAll(async () => {
     module = await createTestingModule(
-      [AppsService],
+      [AppsService,UsersService],
       [AppsController],
-      [UserModule],
+      [
+
+        JwtModule.register({
+          global: true,
+          secret: 'test-secret',
+          signOptions: { expiresIn: '1h' }
+        }),
+      ],
     );
     controller = module.get<AppsController>(AppsController);
     service = module.get<AppsService>(AppsService);
     repository = module.get<Repository<App>>(getRepositoryToken(App));
+    usersService = module.get<UsersService>(UsersService);
     application = module.createNestApplication();
     application.init();
 
@@ -34,7 +45,7 @@ describe('Apps', () => {
     );
 
     const user = userRepository.create({
-      name: 'here',
+      username: 'here',
       email: 'am@faa.com',
       password: 'myPasswors',
     });
@@ -53,9 +64,19 @@ describe('Apps', () => {
       user_id: 1,
     };
     it('should create a new app', async () => {
+
+      const user = await usersService.signup({
+        username: 'Axel',
+        password: 'azerty',
+        email: 'a@gmail.com',
+      });
+
+      const token = await usersService.generateJwt(user);
+
       const response = await request(application.getHttpServer())
         .post('/apps')
         .send(app)
+        .set('Authorization', `Bearer ${token}`)
         .expect(201);
       const newApp = response.body;
 
@@ -63,7 +84,11 @@ describe('Apps', () => {
 
       expect(dbApp?.name).toBe(newApp.name);
       expect(dbApp?.id).toBe(newApp.id);
-      expect(dbApp).toMatchObject({...newApp , created_at :new Date( newApp.created_at),user : undefined})
+      expect(dbApp).toMatchObject({
+        ...newApp,
+        created_at: new Date(newApp.created_at),
+        user: undefined,
+      });
     });
   });
 });

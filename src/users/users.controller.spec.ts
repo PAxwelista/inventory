@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { generate } from 'rxjs';
 
 describe('usersController', () => {
   let controller: UsersController;
@@ -12,8 +13,12 @@ describe('usersController', () => {
     email: 'madotto.axel@gmail.com',
   };
 
+  const jwt = "testJwt"
+
   const mockService = {
-    createUser: jest.fn().mockResolvedValue(mockUser),
+    signup: jest.fn().mockResolvedValue(mockUser),
+    signin: jest.fn().mockResolvedValue(mockUser),
+    generateJwt : jest.fn().mockResolvedValue(jwt)
   };
 
   beforeEach(async () => {
@@ -28,10 +33,16 @@ describe('usersController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  it('should create a user', async () => {
-    const dto = { name: 'Tom', password: 'ea', email: 'axel@gmail.com' };
-    const user = await controller.createUser(dto);
-    expect(user).toEqual(mockUser);
-    expect(mockService.createUser).toHaveBeenCalledWith(dto);
+  it('should signup', async () => {
+    const dto = { username: 'Tom', password: 'ea', email: 'axel@gmail.com' };
+    const user = await controller.signup(dto);
+    expect(user).toBe(jwt);
+    expect(mockService.signup).toHaveBeenCalledWith(dto);
+  });
+  it('should signin', async () => {
+    const dto = { username: 'Tom', password: 'ea'};
+    const user = await controller.signin(dto);
+    expect(user).toBe(jwt);
+    expect(mockService.signin).toHaveBeenCalledWith(dto);
   });
 });

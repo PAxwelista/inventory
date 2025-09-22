@@ -41,7 +41,7 @@ describe('Item', () => {
   let newApp: App;
 
   const user = {
-    name: 'Tom',
+    username: 'Tom',
     email: 'Hello@gmail.com',
     password: 'passwordTest',
   };
@@ -57,7 +57,7 @@ describe('Item', () => {
 
   describe('createItem', () => {
     it('should create a new item into a database', async () => {
-      newUser = await usersService.createUser(user);
+      newUser = await usersService.signup(user);
 
       const app = {
         name: 'newApp',

@@ -1,4 +1,4 @@
-import { Provider, Type } from '@nestjs/common';
+import { DynamicModule, Provider, Type } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { App } from '../../src/apps/app.entity';
@@ -8,7 +8,7 @@ import { User } from '../../src/users/user.entity';
 export const createTestingModule = (
   providers: Provider[] = [],
   controllers: Type<any>[] = [],
-  imports: Type<any>[] = [],
+  imports: (Type<any>|DynamicModule)[] = [],
 ): Promise<TestingModule> => {
   return Test.createTestingModule({
     imports: [

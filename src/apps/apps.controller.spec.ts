@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppsController } from './apps.controller';
 import { AppsService } from './apps.service';
+import { JwtService } from '@nestjs/jwt';
 
-describe('usersController', () => {
+describe('appsController', () => {
   let controller: AppsController;
 
   const mockUser = {
@@ -14,11 +15,14 @@ describe('usersController', () => {
   const mockService = {
     createApp: jest.fn().mockResolvedValue(mockUser),
   };
+  const mockJwtService = {
+    
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AppsController],
-      providers: [{ provide: AppsService, useValue: mockService }],
+      providers: [{ provide: AppsService, useValue: mockService },{ provide: JwtService , useValue : mockJwtService }],
     }).compile();
 
     controller = module.get<AppsController>(AppsController);

@@ -1,20 +1,20 @@
 import { validate } from 'class-validator';
-import { CreateUserDto } from './create-user.dto';
+import { SignupDto } from './signup.dto';
 import { dtoTest } from '../../../test/utils/dto-test';
 
 describe('createUserDto', () => {
 
   const validDto = {
-    name: 'Axel',
+    username: 'Axel',
     email: 'axel@gmail.com',
     password: 'pass',
   };
-  const requiredProps = ['name', 'email', 'password'];
-  dtoTest<CreateUserDto>(CreateUserDto,validDto,requiredProps)
+  const requiredProps = ['username', 'email', 'password'];
+  dtoTest<SignupDto>(SignupDto,validDto,requiredProps)
 
   it('should failed with a invalid email', async () => {
-    const dto = new CreateUserDto();
-    dto.name = 'Axel';
+    const dto = new SignupDto();
+    dto.username = 'Axel';
     dto.email = 'notValid';
     dto.password = 'pass';
 

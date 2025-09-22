@@ -12,7 +12,7 @@ import {
 import { ItemsService } from './items.service';
 import { Item } from './item.entity';
 import { CreateItemDto } from './dto/create-item.dto';
-import { ApiKeyGuard } from '../guard/apiKeyGuard';
+import { ApiKeyGuard } from '../guard/apiKey.guard';
 
 @Controller('items')
 export class ItemsController {
