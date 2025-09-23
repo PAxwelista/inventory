@@ -16,13 +16,29 @@ describe('itemsService', () => {
     id: 1,
     name: 'Apple',
     quantity: 1,
+    app_user_id: 'Tom',
   };
+
+  const mockItems = [
+    {
+      id: 1,
+      name: 'Apple',
+      quantity: 1,
+      app_user_id: 'Tom',
+    },
+    {
+      id: 2,
+      name: 'Carots',
+      quantity: 24,
+      app_user_id: 'Eric',
+    },
+  ];
 
   const mockRepository = {
     create: jest.fn().mockResolvedValue(mockItem),
     save: jest.fn().mockResolvedValue(mockItem),
-    find:jest.fn().mockResolvedValue([mockItem]),
-    findOne:jest.fn().mockResolvedValue(mockItem)
+    find: jest.fn().mockResolvedValue(mockItems),
+    findOne: jest.fn().mockResolvedValue(mockItem),
   };
 
   beforeEach(async () => {
@@ -35,11 +51,12 @@ describe('itemsService', () => {
     }).compile();
     itemsService = module.get<ItemsService>(ItemsService);
   });
-  it ('should bne defined' , ()=>{
-    expect(itemsService).toBeDefined()
-  })
 
-  describe('createItem' , ()=>{
+  it('should bne defined', () => {
+    expect(itemsService).toBeDefined();
+  });
+
+  describe('createItem', () => {
     it('should create a new item', async () => {
       const dtoApp = {
         id: 2,
@@ -51,7 +68,7 @@ describe('itemsService', () => {
       };
       const dtoItem = { name: 'Plant', quantity: 3, app_user_id: 'Tomas' };
       const item = await itemsService.createItem(dtoItem, dtoApp);
-  
+
       expect(item).toBe(mockItem);
       expect(mockRepository.create).toHaveBeenCalledWith({
         ...dtoItem,
@@ -59,39 +76,51 @@ describe('itemsService', () => {
       });
       expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
-  })
+  });
 
-  describe('getAllAppUserItems' , ()=>{
-    it('should get all app user items' , async ()=>{
-      const appId = 4
-      const appUserId = "axel"
+  describe('getAllAppUserItems', () => {
+    it('should get all app user items', async () => {
+      const appId = 4;
+      const appUserId = 'axel';
 
-      const items = await itemsService.getAllAppUserItems(appId,appUserId)
+      const items = await itemsService.getAllAppUserItems(appId, appUserId);
 
-      expect(items).toEqual([mockItem])
+      expect(items).toEqual(mockItems);
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
-    })
-  })
-  
-  describe('softDelete' , ()=>{
-    it('should update delete_at' , async()=>{
+    });
+  });
 
-      const item = await itemsService.softDelete(1,1)
+  describe('getAllAppUserId', () => {
+    it('should get all appUserId', async () => {
+      const appId = 4;
 
-      expect(item).toEqual(mockItem)
-      expect(mockRepository.findOne).toHaveBeenCalledTimes(1)
-      expect(mockRepository.save).toHaveBeenCalledTimes(2)
-    })
-  })
-  describe('updateQty' , ()=>{
-    it ('should update quantity' , async()=>{
-      const item = await itemsService.updateQty(1,1,4)
+      const items = await itemsService.getAllAppUserId(appId);
 
-      expect(item).toEqual(mockItem)
-      expect(mockRepository.findOne).toHaveBeenCalledTimes(2)
-      expect(mockRepository.save).toHaveBeenCalledTimes(3)
-    })
-  })
+      const appUserIds = [
+        ...new Set(mockItems.map((mockItem) => mockItem.app_user_id)),
+      ];
 
-  
+      expect(items).toEqual(appUserIds);
+      expect(mockRepository.find).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('softDelete', () => {
+    it('should update delete_at', async () => {
+      const item = await itemsService.softDelete(1, 1);
+
+      expect(item).toEqual(mockItem);
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(2);
+    });
+  });
+  describe('updateQty', () => {
+    it('should update quantity', async () => {
+      const item = await itemsService.updateQty(1, 1, 4);
+
+      expect(item).toEqual(mockItem);
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(2);
+      expect(mockRepository.save).toHaveBeenCalledTimes(3);
+    });
+  });
 });

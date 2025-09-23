@@ -28,6 +28,17 @@ export class ItemsService {
     });
   }
 
+  async getAllAppUserId(appId: number): Promise<string[]> {
+    const items = await this.itemsRepository.find({
+      where: {
+        app: { id: appId },
+        delete_at: IsNull(),
+      },
+    });
+
+    return [...new Set(items.map((item) => item.app_user_id))];
+  }
+
   async softDelete(itemId: number, appId: number): Promise<Item> {
     const item = await this.itemsRepository.findOne({
       where: { id: itemId, app: { id: appId }, delete_at: IsNull() },
