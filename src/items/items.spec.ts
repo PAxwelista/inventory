@@ -41,7 +41,7 @@ describe('Item', () => {
   let newApp: App;
 
   const user = {
-    username: 'Tom',
+    username: 'Eric',
     email: 'Hello@gmail.com',
     password: 'passwordTest',
   };
@@ -95,6 +95,18 @@ describe('Item', () => {
       expect(response.body).toMatchObject([findItem]);
     });
   });
+  describe('getAllAppUserId', () => {
+    it('should find all app user id', async () => {
+
+      const response = await request(application.getHttpServer())
+        .get(`/items/getAllAppUserId/`)
+        .set('x-api-key', newApp.api_key)
+        .expect(200);
+
+        expect(response.body).toContain(item.app_user_id)
+      
+    });
+  });
   describe('softDelete', () => {
     it('should update delete_at', async () => {
       const newItem = await controller.createItem({ app: newApp } as any, item);
@@ -114,33 +126,29 @@ describe('Item', () => {
 
       expect(dbItemDeleted?.delete_at).not.toBe(null);
     });
-  });``
-describe('updateQty' , ()=>{
-  it('should update quantity' , async ()=>{
-    const newItem = await controller.createItem({ app: newApp } as any, item);
+  });
+  ``;
+  describe('updateQty', () => {
+    it('should update quantity', async () => {
+      const newItem = await controller.createItem({ app: newApp } as any, item);
 
-    const dbItem = await repository.findOne({ where: { id: newItem.id } });
+      const dbItem = await repository.findOne({ where: { id: newItem.id } });
 
-    const newQty = 5
+      const newQty = 5;
 
-    expect(dbItem?.quantity).toBe(item.quantity)
+      expect(dbItem?.quantity).toBe(item.quantity);
 
-    await request(application.getHttpServer())
-    .patch(`/items/updateQty/${newItem.id}`)
-    .set('x-api-key', newApp.api_key)
-    .send({quantity : newQty})
-    .expect(200);
+      await request(application.getHttpServer())
+        .patch(`/items/updateQty/${newItem.id}`)
+        .set('x-api-key', newApp.api_key)
+        .send({ quantity: newQty })
+        .expect(200);
 
+      const dbItemQtyChange = await repository.findOne({
+        where: { id: newItem.id },
+      });
 
-    const dbItemQtyChange = await repository.findOne({ where: { id: newItem.id } });
-
-    expect(dbItemQtyChange?.quantity).toBe(newQty)
-
-
-  })
-
-  
-
-
-})
+      expect(dbItemQtyChange?.quantity).toBe(newQty);
+    });
+  });
 });

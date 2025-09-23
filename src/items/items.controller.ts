@@ -29,30 +29,44 @@ export class ItemsController {
 
   @UseGuards(ApiKeyGuard)
   @Get('findWithAppUserId/:id')
-  getAllAppUserItems(@Req() req: Request, @Param('id') appUserId:string): Promise<Item[]> {
+  getAllAppUserItems(
+    @Req() req: Request,
+    @Param('id') appUserId: string,
+  ): Promise<Item[]> {
     const app = req['app'];
     if (!app) throw new UnauthorizedException('UseGuard Error');
 
-    return this.itemsService.getAllAppUserItems(app.id,appUserId);
+    return this.itemsService.getAllAppUserItems(app.id, appUserId);
+  }
+
+  @UseGuards(ApiKeyGuard)
+  @Get('getAllAppUserId')
+  getAllAppUserId(@Req() req: Request): Promise<string[]> {
+    const app = req['app'];
+    if (!app) throw new UnauthorizedException('UseGuard Error');
+
+    return this.itemsService.getAllAppUserId(app.id);
   }
 
   @UseGuards(ApiKeyGuard)
   @Patch('/softDelete/:id')
-  softDelete(@Req() req: Request,@Param('id') id:number){
+  softDelete(@Req() req: Request, @Param('id') id: number) {
     const app = req['app'];
     if (!app) throw new UnauthorizedException('UseGuard Error');
-    
-    return this.itemsService.softDelete(id,app.id)
+
+    return this.itemsService.softDelete(id, app.id);
   }
 
   @UseGuards(ApiKeyGuard)
   @Patch('/updateQty/:id')
-  updateQty(@Req() req: Request,@Param('id') id:number , @Body('quantity') quantity:number){
+  updateQty(
+    @Req() req: Request,
+    @Param('id') id: number,
+    @Body('quantity') quantity: number,
+  ) {
     const app = req['app'];
     if (!app) throw new UnauthorizedException('UseGuard Error');
-    
-    return this.itemsService.updateQty(id,app.id,quantity)
+
+    return this.itemsService.updateQty(id, app.id, quantity);
   }
-
-
 }

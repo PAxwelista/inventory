@@ -14,11 +14,29 @@ describe('itemsController', () => {
     app_user_id: 'Tom',
   };
 
+  const mockItems = [
+    {
+      id: 1,
+      name: 'Apple',
+      quantity: 1,
+      app_user_id: 'Tom',
+    },
+    {
+      id: 2,
+      name: 'Carots',
+      quantity: 24,
+      app_user_id: 'Eric',
+    },
+  ];
+
+  const mockAppUserId = [...new Set (mockItems.map(mockItem=>mockItem.app_user_id))
+]
   const mockItemsService = {
     createItem: jest.fn().mockResolvedValue(mockItem),
-    getAllAppUserItems: jest.fn().mockResolvedValue([mockItem]),
+    getAllAppUserItems: jest.fn().mockResolvedValue(mockItems),
     softDelete: jest.fn().mockResolvedValue(mockItem),
     updateQty: jest.fn().mockResolvedValue(mockItem),
+    getAllAppUserId : jest.fn().mockResolvedValue(mockAppUserId),
   };
   const mockAppsService = {
     findByApiKey: jest.fn().mockResolvedValue({}),
@@ -60,10 +78,22 @@ describe('itemsController', () => {
       const dto = 'test' ;
       const items = await controller.getAllAppUserItems(mockReq as any, dto);
 
-      expect(items).toEqual([mockItem]);
+      expect(items).toEqual(mockItems);
       expect(mockItemsService.getAllAppUserItems).toHaveBeenCalledWith(
         mockReq.app.id,
         dto,
+      );
+    });
+  });
+
+  describe('getAllAppUserid', () => {
+    it('should find all app user id', async () => {
+      
+      const items = await controller.getAllAppUserId(mockReq as any);
+
+      expect(items).toEqual(mockAppUserId);
+      expect(mockItemsService.getAllAppUserId).toHaveBeenCalledWith(
+        mockReq.app.id
       );
     });
   });
