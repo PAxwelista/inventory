@@ -22,11 +22,7 @@ describe('UsersService', () => {
   const mockRepository = {
     save: jest.fn().mockResolvedValue(mockUser),
     create: jest.fn().mockResolvedValue(mockUser),
-    findOne: jest
-      .fn()
-      .mockResolvedValueOnce(mockUser)
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce(mockUser),
+    findOne: jest.fn().mockResolvedValue(null),
   };
 
   const mockJwtService = {
@@ -41,11 +37,11 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockRepository,
-        
-        },{
-          provide:JwtService,
-          useValue:mockJwtService
-        }
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
       ],
     }).compile();
 
@@ -83,19 +79,24 @@ describe('UsersService', () => {
       expect(repository.save).toHaveBeenCalled();
     });
     it('should find a user with her ID', async () => {
+      mockRepository.findOne.mockResolvedValueOnce(mockUser);
+
       const user = await service.findOneById(1);
 
       expect(user).toEqual(mockUser);
+
+      mockRepository.findOne.mockResolvedValue(null);
     });
     it('should return null if user not find', async () => {
       const user = await service.findOneById(2);
 
-      expect(user).toBe(null);
+      expect(user).toBeNull();
     });
   });
   describe('signin', () => {
     it('should signin', async () => {
       bcrypt.compare.mockResolvedValue(true);
+      mockRepository.findOne.mockResolvedValueOnce(mockUser);
 
       const dto = { username: 'Tom', password: 'ea' };
       const user = await service.signin(dto);
@@ -110,6 +111,8 @@ describe('UsersService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { username: dto.username },
       });
+
+      mockRepository.findOne.mockResolvedValue(null);
     });
   });
 });

@@ -4,7 +4,6 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { AppModule } from '../apps/apps.module';
 import { UserModule } from './users.module';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -39,20 +38,36 @@ describe('Users', () => {
   });
 
   describe('createUser', () => {
-    const item = {
+    const user = {
       username: 'A',
       email: 'at@afz.com',
       password: 'test',
     };
+    const user2 = {
+      username: 'A',
+      email: 'ataf@afz.com',
+      password: 'test',
+    };
+    const user3 = {
+      username: 'Axel',
+      email: 'at@afz.com',
+      password: 'test',
+    };
+    const user4 = {
+      username: 'Axel',
+      email: 'ataf@afz.com',
+      password: 'test',
+    };
+
     it('should add a new user into the database', async () => {
       await request(application.getHttpServer())
         .post('/users/signup')
-        .send(item)
+        .send(user)
         .expect(201);
       const newUser = await service.findOneById(1);
       if (!newUser) return;
       expect(newUser.id).toBeDefined();
-      expect(newUser.username).toBe(item.username);
+      expect(newUser.username).toBe(user.username);
       const dbUser = await service.findOneById(newUser.id);
       expect(dbUser).toMatchObject({
         ...newUser,
@@ -61,12 +76,29 @@ describe('Users', () => {
     });
 
     it('should have a crypt password', async () => {
-      const response = await request(application.getHttpServer())
+      const newUser = await service.findOneById(1);
+
+      expect(newUser?.password).not.toBe(user.password);
+    });
+
+    it('should not create a user with a already used username', async () => {
+      await request(application.getHttpServer())
         .post('/users/signup')
-        .send(item)
+        .send(user2)
+        .expect(409);
+    });
+
+    it('should not create a user with a already used email', async () => {
+      await request(application.getHttpServer())
+        .post('/users/signup')
+        .send(user3)
+        .expect(409);
+    });
+    it('should create the second user', async () => {
+      await request(application.getHttpServer())
+        .post('/users/signup')
+        .send(user4)
         .expect(201);
-      const newItem = response.body;
-      expect(newItem.password).not.toBe('test');
     });
   });
 });

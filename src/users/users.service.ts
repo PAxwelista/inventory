@@ -1,4 +1,4 @@
-import { Injectable,ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, ConflictException } from '@nestjs/common';
 import { User } from './user.entity';
 import { JwtService } from '@nestjs/jwt';
 
@@ -20,6 +20,12 @@ export class UsersService {
   async signup(user: SignupDto): Promise<User> {
     const hashPassword = await bcrypt.hash(user.password, 10);
 
+    const userSameEmailOrUsername = await this.usersRepository.findOne({
+      where: [{ username: user.username } , {email : user.email}],
+    });
+
+    if (userSameEmailOrUsername) throw new  ConflictException("Email or username already used")
+
     const newUser = this.usersRepository.create({
       ...user,
       password: hashPassword,
@@ -36,20 +42,23 @@ export class UsersService {
       where: { username: user.username },
     });
 
-    if (!userFind) throw new ForbiddenException('Username or password uncorrect');
+    if (!userFind)
+      throw new ForbiddenException('Username or password uncorrect');
 
-    const isPasswordValid = await bcrypt.compare(user.password, userFind.password);
+    const isPasswordValid = await bcrypt.compare(
+      user.password,
+      userFind.password,
+    );
 
-    if (!isPasswordValid) throw new ForbiddenException('Username or password uncorrect');
+    if (!isPasswordValid)
+      throw new ForbiddenException('Username or password uncorrect');
 
     return userFind;
   }
 
-  async generateJwt(user : User) : Promise<string> {
+  async generateJwt(user: User): Promise<string> {
+    const payload = { username: user.username, sub: user.id };
 
-    const payload = {username:user.username , sub :user.id}
-
-    return this.jwtService.signAsync(payload)
-
+    return this.jwtService.signAsync(payload);
   }
 }
