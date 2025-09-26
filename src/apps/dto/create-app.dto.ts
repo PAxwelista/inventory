@@ -1,12 +1,7 @@
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { User } from 'src/users/user.entity';
+import {  IsNotEmpty, IsString} from 'class-validator';
 
 export class CreateAppDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsInt()
-  @IsNotEmpty()
-  user_id: number;
 }

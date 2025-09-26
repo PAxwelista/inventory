@@ -14,8 +14,9 @@ export class AppsService {
     private readonly usersService:  UsersService
   ) {}
 
-  async createApp(app: CreateAppDto): Promise<App> {
-    const user = await this.usersService.findOneById(app.user_id)
+  async createApp(app: CreateAppDto,userId : number): Promise<App> {
+    const appUserId = userId
+    const user = await this.usersService.findOneById(appUserId)
     if (!user) {
       throw new BadRequestException('UserdId invalid');
     }

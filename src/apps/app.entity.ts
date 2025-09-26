@@ -24,8 +24,10 @@ export class App {
   @OneToMany(() => Item, (item) => item.app)
   items: Item[];
 
-  @ManyToOne(() => User)
-  @JoinColumn({name:'user_id'})
+  @ManyToOne(() => User, (user) => user.apps, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @CreateDateColumn()

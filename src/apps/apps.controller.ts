@@ -4,21 +4,21 @@ import { AppsService } from './apps.service';
 import { CreateAppDto } from './dto/create-app.dto';
 import { AuthGuard } from '../guard/auth.guard';
 
-
 @Controller('apps')
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
   @UseGuards(AuthGuard)
   @Post()
-  createApp(@Body() appData : CreateAppDto) : Promise<App>{
-    return this.appsService.createApp(appData)
+  createApp(@Req() req: Request, @Body() appData: CreateAppDto): Promise<App> {
+    const user = req['user'];
+    return this.appsService.createApp(appData,user.sub);
   }
 
-//   @UseGuards(ApiKeyGuard)
-//   @Get()
-//   getAppById(@Req() req:Request) :string
-// {
-  
-// }
+  //   @UseGuards(ApiKeyGuard)
+  //   @Get()
+  //   getAppById(@Req() req:Request) :string
+  // {
+
+  // }
 }

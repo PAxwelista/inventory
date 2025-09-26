@@ -13,8 +13,8 @@ export class Item {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => App, {
-    cascade: false,
+  @ManyToOne(() => App, (app) => app.user, {
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'app_id' })
   app: App;
@@ -37,6 +37,10 @@ export class Item {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type:  process.env.NODE_ENV === 'test' ? 'datetime' : 'timestamp', nullable: true, default: null })
+  @Column({
+    type: process.env.NODE_ENV === 'test' ? 'datetime' : 'timestamp',
+    nullable: true,
+    default: null,
+  })
   delete_at: Date | null;
 }
