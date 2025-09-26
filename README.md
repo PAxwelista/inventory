@@ -1,98 +1,208 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Introduction
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This API gives developers the ability to integrate your inventory into their own applications.  
+It allows external apps to access, manage, and synchronize inventory data easily through a set of RESTful endpoints.
 
-## Description
+## Authentification
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This API uses two authentication mechanisms:
 
-## Project setup
+### 1. Developer Authentication (JWT)
 
-```bash
-$ yarn install
+Developers must authenticate using JSON Web Tokens (JWT) to manage their account.  
+Include the token in the request header:
+
+```http
+Authorization: Bearer <your_jwt_token>
 ```
 
-## Compile and run the project
+### 2. Application Access (API Key)
 
-```bash
-# development
-$ yarn run start
+Applications can access inventory data using an API key.
+Include the API key in the request header:
 
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```http
+x-api-key: <your_api_key>
 ```
 
-## Run tests
+## Endpoints
 
-```bash
-# unit tests
-$ yarn run test
+### Users
 
-# e2e tests
-$ yarn run test:e2e
+#### `POST /signup`
 
-# test coverage
-$ yarn run test:cov
+**Description**: Signup and get a jwt token
+
+**Body Parameters**
+`username`:required / string
+`email`:required / email
+`password`:required / string / min 8 length / at least one uppercase letter / at least one lowercase letter / at least one number / at least one special character
+
+**Response Example:**
+jwt
+
+#### `POST /signin`
+
+**Description**: Signin and get a jwt token
+
+**Body Parameters**
+`username`:required / string
+`password`:required / string
+
+**Response Example:**
+jwt
+
+### Appp
+
+#### `POST /`
+
+**Description**:Create a new app
+
+**Authentification**:`Bearer <your_jwt_token>`
+
+**Body Parameters**
+`name` : required / string
+`user_id` : required / integer
+
+**Response Example**
+
+```json
+{
+  "id": 1,
+  "name": "testApp",
+  "api_key": "",
+  "items": [],
+  "user": "userId",
+  "create_at": "Date"
+}
 ```
 
-## Deployment
+### Items
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+#### `POST /`
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+**Descritpion**:Create a new item
 
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+**Authentification**:`x-api-key: <your_api_key>`
+
+**Body Parameters**
+`name` : required / string
+`quantity` : required / integer
+`app_user_id` : required / string
+`options` : optional / json
+
+**Response Example**
+
+```json
+{
+  "id": 2,
+  "app": "",
+  "app_user_id": "",
+  "name": "",
+  "quantity": 3,
+  "options": {},
+  "create_at": "",
+  "delete_at": null
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### `GET /findWithAppUserId/:id`
 
-## Resources
+**Description**:Find all items that have the same app user id
 
-Check out a few resources that may come in handy when working with NestJS:
+**Authentification**:`x-api-key: <your_api_key>`
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**Paramaters**
+`id`:required/string
 
-## Support
+**Response Example**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```json
+[
+  {
+    "id": 2,
+    "app": "",
+    "app_user_id": "",
+    "name": "",
+    "quantity": 3,
+    "options": {},
+    "create_at": "",
+    "delete_at": null
+  },
+  {
+    "id": 2,
+    "app": "",
+    "app_user_id": "",
+    "name": "",
+    "quantity": 3,
+    "options": {},
+    "create_at": "",
+    "delete_at": null
+  }
+]
+```
 
-## Stay in touch
+#### `GET /getAllAppUserId`
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Description**:Get all app user id for this app
+
+**Authentification**:`x-api-key: <your_api_key>`
+
+**Response Example**
+["23","42"]
+
+#### `PATCH /softDelete/:id`
+
+**Description**:Soft delete a item
+
+**Authentification**:`x-api-key: <your_api_key>`
+
+**Paramaters**
+`id`:required/string
+
+**Response Example**
+
+```json
+{
+  "id": 2,
+  "app": "",
+  "app_user_id": "",
+  "name": "",
+  "quantity": 3,
+  "options": {},
+  "create_at": "",
+  "delete_at": null
+}
+```
+
+#### `PATCH /updateQty/:id`
+
+**Description**:Update the quantity of an item
+
+**Authentification**:`x-api-key: <your_api_key>`
+
+**Paramaters**
+`id`:required / string
+
+**Body Parameteres**
+`quantity`: required / string
+
+**Response Example**
+```json
+{
+  "id": 2,
+  "app": "",
+  "app_user_id": "",
+  "name": "",
+  "quantity": 3,
+  "options": {},
+  "create_at": "",
+  "delete_at": null
+}
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This API is licensed under the MIT License.
