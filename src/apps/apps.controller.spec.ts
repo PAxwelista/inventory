@@ -19,6 +19,8 @@ describe('appsController', () => {
     
   }
 
+  const mockReq = { user: { username: "Axel", sub: 1 } };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AppsController],
@@ -33,9 +35,9 @@ describe('appsController', () => {
   });
   it('should create a app', async () => {
     const dto = { name: 'Tom', user_id: 1 };
-    const app = await controller.createApp(dto);
+    const app = await controller.createApp(mockReq as any,dto);
 
     expect(app).toEqual(mockUser);
-    expect(mockService.createApp).toHaveBeenCalledWith(dto);
+    expect(mockService.createApp).toHaveBeenCalledWith(dto,mockReq.user.sub);
   });
 });

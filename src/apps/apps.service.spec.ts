@@ -42,11 +42,12 @@ describe('AppsService', () => {
   });
 
   it('should create a new App', async () => {
-    const dto = { name: 'newApp', user_id: 1 };
-    const app = await service.createApp(dto);
+    const dtoName = { name: 'newApp' };
+    const dtoUserId = 1
+    const app = await service.createApp(dtoName,dtoUserId);
 
     expect(app).toEqual(mockApp);
-    expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dto)); 
+    expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dtoName)); 
     expect(mockRepository.save).toHaveBeenCalledTimes(1)
   });
 });
