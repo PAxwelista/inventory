@@ -60,11 +60,11 @@ describe('Item', () => {
       newUser = await usersService.signup(user);
 
       const app = {
-        name: 'newApp',
-        user_id: newUser.id,
+        name: 'newApp'
       };
+      const userId = newUser.id
 
-      newApp = await appsService.createApp(app);
+      newApp = await appsService.createApp(app,userId);
       const newItem = await controller.createItem({ app: newApp } as any, item);
 
       await request(application.getHttpServer())

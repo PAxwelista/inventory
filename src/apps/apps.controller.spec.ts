@@ -14,6 +14,7 @@ describe('appsController', () => {
 
   const mockService = {
     createApp: jest.fn().mockResolvedValue(mockUser),
+    getUserApps: jest.fn().mockResolvedValue(mockUser),
   };
   const mockJwtService = {
     
@@ -33,11 +34,23 @@ describe('appsController', () => {
   it('should be defined', async () => {
     expect(controller).toBeDefined();
   });
-  it('should create a app', async () => {
-    const dto = { name: 'Tom', user_id: 1 };
-    const app = await controller.createApp(mockReq as any,dto);
+  describe('createApp',()=>{
+    it('should create a app', async () => {
+      const dto = { name: 'Tom', user_id: 1 };
+      const app = await controller.createApp(mockReq as any,dto);
+  
+      expect(app).toEqual(mockUser);
+      expect(mockService.createApp).toHaveBeenCalledWith(dto,mockReq.user.sub);
+    });
+  })
 
-    expect(app).toEqual(mockUser);
-    expect(mockService.createApp).toHaveBeenCalledWith(dto,mockReq.user.sub);
-  });
+  describe('getUserApps' , ()=>{
+    it('should get user apps', async () => {
+      const app = await controller.getAppById(mockReq as any);
+  
+      expect(app).toEqual(mockUser);
+      expect(mockService.getUserApps).toHaveBeenCalledWith(mockReq.user.sub);
+    });
+  })
+  
 });

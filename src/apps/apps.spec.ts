@@ -13,8 +13,6 @@ import { UsersService } from '../users/users.service';
 import { JwtModule } from '@nestjs/jwt';
 
 describe('Apps', () => {
-  let service: AppsService;
-  let controller: AppsController;
   let module: TestingModule;
   let repository: Repository<App>;
   let application: INestApplication;
@@ -22,19 +20,16 @@ describe('Apps', () => {
 
   beforeAll(async () => {
     module = await createTestingModule(
-      [AppsService,UsersService],
+      [AppsService, UsersService],
       [AppsController],
       [
-
         JwtModule.register({
           global: true,
           secret: 'test-secret',
-          signOptions: { expiresIn: '1h' }
+          signOptions: { expiresIn: '1h' },
         }),
       ],
     );
-    controller = module.get<AppsController>(AppsController);
-    service = module.get<AppsService>(AppsService);
     repository = module.get<Repository<App>>(getRepositoryToken(App));
     usersService = module.get<UsersService>(UsersService);
     application = module.createNestApplication();
@@ -58,20 +53,21 @@ describe('Apps', () => {
     await module.close();
   });
 
+  let token: string;
+  let user: User;
+
   describe('CreateApp', () => {
     const app = {
       name: 'newApp',
-      user_id: 1,
     };
     it('should create a new app', async () => {
-
-      const user = await usersService.signup({
+      user = await usersService.signup({
         username: 'Axel',
         password: 'azerty',
         email: 'a@gmail.com',
       });
 
-      const token = await usersService.generateJwt(user);
+      token = await usersService.generateJwt(user);
 
       const response = await request(application.getHttpServer())
         .post('/apps')
@@ -89,6 +85,20 @@ describe('Apps', () => {
         created_at: new Date(newApp.created_at),
         user: undefined,
       });
+    });
+  });
+
+  describe('getUserApps', () => {
+    it('should find user apps', async () => {
+      const response = await request(application.getHttpServer())
+        .get('/apps')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const apps = response.body;
+
+      const dbApps = await repository.find({ where: { user: { id: user.id } } });
+
+      expect(apps).toEqual(dbApps.map(dbApp=>({...dbApp , created_at : dbApp.created_at.toISOString()})));
     });
   });
 });

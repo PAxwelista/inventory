@@ -12,13 +12,13 @@ export class AppsController {
   @Post()
   createApp(@Req() req: Request, @Body() appData: CreateAppDto): Promise<App> {
     const user = req['user'];
-    return this.appsService.createApp(appData,user.sub);
+    return this.appsService.createApp(appData, user.sub);
   }
 
-  //   @UseGuards(ApiKeyGuard)
-  //   @Get()
-  //   getAppById(@Req() req:Request) :string
-  // {
-
-  // }
+  @UseGuards(AuthGuard)
+  @Get()
+  getAppById(@Req() req: Request): Promise<App[]> {
+    const user = req['user'];
+    return this.appsService.getUserApps(user.sub);
+  }
 }

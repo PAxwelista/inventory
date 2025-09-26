@@ -18,6 +18,7 @@ describe('AppsService', () => {
   const mockRepository = {
     save: jest.fn().mockResolvedValue(mockApp),
     create: jest.fn().mockResolvedValue(mockApp),
+    find: jest.fn().mockResolvedValue([mockApp]),
   };
 
   const mockUsersService = {
@@ -41,13 +42,29 @@ describe('AppsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new App', async () => {
-    const dtoName = { name: 'newApp' };
-    const dtoUserId = 1
-    const app = await service.createApp(dtoName,dtoUserId);
+  describe('createApp', () => {
+    it('should create a new App', async () => {
+      const dtoName = { name: 'newApp' };
+      const dtoUserId = 1;
+      const app = await service.createApp(dtoName, dtoUserId);
 
-    expect(app).toEqual(mockApp);
-    expect(mockRepository.create).toHaveBeenCalledWith(expect.objectContaining(dtoName)); 
-    expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(app).toEqual(mockApp);
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining(dtoName),
+      );
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getUserApps', () => {
+    it('should get user apps', async () => {
+      const dtoUserId = 1;
+      const app = await service.getUserApps(dtoUserId);
+
+      expect(app).toEqual([mockApp]);
+      expect(mockRepository.find).toHaveBeenCalledWith({
+        where: { user: { id: dtoUserId } },
+      });
+    });
   });
 });
