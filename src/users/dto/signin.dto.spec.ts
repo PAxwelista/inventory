@@ -1,8 +1,7 @@
-import { validate } from 'class-validator';
 import { SigninDto } from './signin.dto';
 import { dtoTest } from '../../../test/utils/dto-test';
 
-describe('createUserDto', () => {
+describe('SigninDto', () => {
 
   const validDto = {
     username: 'Axel',

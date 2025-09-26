@@ -41,7 +41,7 @@ x-api-key: <your_api_key>
 `password`:required / string / min 8 length / at least one uppercase letter / at least one lowercase letter / at least one number / at least one special character
 
 **Response Example:**
-jwt
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkF4ZWwiLCJzdWIiOjUsImlhdCI6MTc1ODg4ODk5OCwiZXhwIjoxNzU4ODg5MDU4fQ.K6apeu2BG5P6TuSi_OUdD_b5sVyGGc-HYjd4CG5Q4rE
 
 #### `POST /signin`
 
@@ -52,7 +52,7 @@ jwt
 `password`:required / string
 
 **Response Example:**
-jwt
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkF4ZWwiLCJzdWIiOjUsImlhdCI6MTc1ODg4ODk5OCwiZXhwIjoxNzU4ODg5MDU4fQ.K6apeu2BG5P6TuSi_OUdD_b5sVyGGc-HYjd4CG5Q4rE
 
 ### Appp
 
@@ -60,7 +60,7 @@ jwt
 
 **Description**:Create a new app
 
-**Authentification**:`Bearer <your_jwt_token>`
+**Authentification**:`Authorization: Bearer <your_jwt_token>`
 
 **Body Parameters**
 `name` : required / string
